@@ -1,0 +1,84 @@
+Folder PATH listing for volume Data
+Volume serial number is 675E-6740
+D:.
+³   LICENSE
+³   README.md
+³   requirements.txt
+³   setup.py
+³   tree.txt
+³   
+ÃÄÄÄbuild
+³   ÀÄÄÄbdist.win-amd64
+ÃÄÄÄdata
+³   ³   decrypted_file.doc
+³   ³   
+³   ÃÄÄÄdecrypted
+³   ³       hay_decrypted.doc
+³   ³       
+³   ÃÄÄÄencrypted_files
+³   ³       hay.doc
+³   ³       hihi.doc
+³   ³       
+³   ÃÄÄÄresults
+³   ³       decrypted_file.doc
+³   ³       decrypted_hay.doc
+³   ³       hihi.doc
+³   ³       ketqua.doc
+³   ³       
+³   ÀÄÄÄwordlists
+³           10MPASS.txt
+³           dictionary.txt
+³           
+ÃÄÄÄdist
+³       password_cracker_word-1.0-py3.12.egg
+³       password_cracker_word-1.0.tar.gz
+³       
+ÃÄÄÄdocs
+³       developer_guide.md
+³       user_manual.md
+³       
+ÃÄÄÄsrc
+³   ³   base.py
+³   ³   cli.py
+³   ³   common.py
+³   ³   doc97.py
+³   ³   exceptions.py
+³   ³   rc4.py
+³   ³   rc4_cryptoapi.py
+³   ³   xor_obfuscation.py
+³   ³   __init__.py
+³   ³   __main__.py
+³   ³   
+³   ÃÄÄÄpassword_cracker_word.egg-info
+³   ³       dependency_links.txt
+³   ³       entry_points.txt
+³   ³       PKG-INFO
+³   ³       requires.txt
+³   ³       SOURCES.txt
+³   ³       top_level.txt
+³   ³       
+³   ÀÄÄÄ__pycache__
+³           base.cpython-312.pyc
+³           base.cpython-313.pyc
+³           cli.cpython-313.pyc
+³           common.cpython-312.pyc
+³           common.cpython-313.pyc
+³           doc97.cpython-312.pyc
+³           doc97.cpython-313.pyc
+³           exceptions.cpython-312.pyc
+³           exceptions.cpython-313.pyc
+³           rc4.cpython-312.pyc
+³           rc4.cpython-313.pyc
+³           rc4_cryptoapi.cpython-312.pyc
+³           rc4_cryptoapi.cpython-313.pyc
+³           xor_obfuscation.cpython-312.pyc
+³           xor_obfuscation.cpython-313.pyc
+³           __init__.cpython-313.pyc
+³           
+ÀÄÄÄtests
+        test_cracker.py
+        test_dictionary.py
+        test_utils.py
+        test_word_reader.py
+        __init__.py
+        
