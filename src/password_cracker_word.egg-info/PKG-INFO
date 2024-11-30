@@ -1,0 +1,18 @@
+Metadata-Version: 2.1
+Name: password-cracker-word
+Version: 1.0.0
+Summary: Công cụ giải mã các file MS DOC 97.
+Home-page: https://github.com/huynhtam03/password-cracker-word
+Author: Huynh Thanh Tam
+Author-email: hthanhtam@hichaocau.online
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
+Requires-Dist: colorama==0.4.6
+Requires-Dist: pyfiglet==1.0.2
+Requires-Dist: setuptools==75.4.0
+
+pip install -r requirements.txt
+pip install -e .

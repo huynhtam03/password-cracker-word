@@ -1,0 +1,2 @@
+[console_scripts]
+doc97-decrypt = cli:main
