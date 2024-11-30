@@ -12,18 +12,9 @@ setup(
     packages=find_packages(where='src'),  # Tìm các gói (package) trong thư mục 'src'
     package_dir={'': 'src'},  # Chỉ định thư mục chứa mã nguồn là 'src'
     install_requires=[  # Liệt kê các phụ thuộc mà dự án cần
-        'cffi==1.17.1',
         'colorama==0.4.6',
-        'cryptography==43.0.3',
-        'cupy-cuda12x==13.3.0',
-        'fastrlock==0.8.2',
-        'numpy==2.1.3',
-        'olefile==0.47',
-        'password-cracker-word==1.0',  # Giả sử bạn muốn cài đặt chính gói của mình như một phụ thuộc (tham chiếu chính)
-        'pycparser==2.22',
         'pyfiglet==1.0.2',
         'setuptools==75.4.0',
-        'tqdm==4.67.0',
     ],
     classifiers=[  # Các phân loại (classifiers) cho dự án
         'Programming Language :: Python :: 3',  # Chỉ ra rằng dự án hỗ trợ Python 3

@@ -1,5 +1,5 @@
 import psutil
-import GPUtil
+import GPUtil 
 import platform
 
 def display_cpu_and_gpu_info():
