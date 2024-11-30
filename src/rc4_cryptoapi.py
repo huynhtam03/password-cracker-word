@@ -24,10 +24,10 @@ def _makekey(password, salt, keyLength, block, algIdHash=0x00008004):
 class RC4:
     def __init__(self, key):
         self.key = key
-        self.state = list(range(256))  # Initialize the state array (S-box)
+        self.state = list(range(256))  # Khởi tạo mảng trạng thái (S-box)
         self.i = 0
         self.j = 0
-        # KSA (Key Scheduling Algorithm)
+        # KSA (Thuật toán lập lịch khóa)
         key_length = len(key)
         j = 0
         for i in range(256):
@@ -35,7 +35,7 @@ class RC4:
             self.state[i], self.state[j] = self.state[j], self.state[i]
     
     def _next_byte(self):
-        # Pseudo-random byte generation using the PRGA (Pseudo-Random Generation Algorithm)
+        # Sinh byte giả ngẫu nhiên sử dụng PRGA (Thuật toán sinh ngẫu nhiên)
         self.i = (self.i + 1) % 256
         self.j = (self.j + self.state[self.i]) % 256
         self.state[self.i], self.state[self.j] = self.state[self.j], self.state[self.i]
@@ -75,10 +75,10 @@ class DocumentRC4CryptoAPI:
             dec = rc4.decrypt(buf)
             obuf.write(dec)
 
-            # Rekey (RC4 rekeying step)
+            # Rekey (Bước thay đổi khóa RC4)
             block += 1
             key = _makekey(password, salt, keySize, block)
-            rc4 = RC4(key)  # Update RC4 state with the new key
+            rc4 = RC4(key)  # Cập nhật trạng thái RC4 với khóa mới
 
         obuf.seek(0)
         return obuf
