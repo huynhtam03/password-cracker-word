@@ -1,38 +1,44 @@
 from setuptools import setup, find_packages
+import os
+
+# Đọc nội dung của README.md để sử dụng trong long_description
+long_description = ''
+with open(os.path.join(os.path.dirname(__file__), 'README.md'), encoding='utf-8') as f:
+    long_description = f.read()
 
 setup(
     name='password-cracker-word',  # Tên dự án
-    version='1.0.0',  # Phiên bản của dự án
+    version='1.0.0',  # Phiên bản dự án
     author='Huynh Thanh Tam',  # Tên tác giả
     author_email='hthanhtam@hichaocau.online',  # Email của tác giả
-    description='Công cụ giải mã các file MS DOC 97.',  # Mô tả ngắn gọn về dự án
-    long_description=open('README.md').read(),  # Mô tả chi tiết, thường được lấy từ file README.md
-    long_description_content_type='text/markdown',  # Định dạng của mô tả chi tiết (ở đây là Markdown)
-    url='https://github.com/huynhtam03/password-cracker-word',  # URL của dự án trên GitHub hoặc trang web
-    packages=find_packages(where='src'),  # Tìm các gói (package) trong thư mục 'src'
+    description='Công cụ giải mã các file MS DOC 97.',  # Mô tả ngắn gọn
+    long_description=long_description,  # Đọc mô tả dài từ README.md
+    long_description_content_type='text/markdown',  # Định dạng mô tả dài (Markdown)
+    url='https://github.com/huynhtam03/password-cracker-word',  # URL dự án trên GitHub
+    packages=find_packages(where='src'),  # Tìm các package trong thư mục src
     package_dir={'': 'src'},  # Chỉ định thư mục chứa mã nguồn là 'src'
-    install_requires=[  # Liệt kê các phụ thuộc mà dự án cần
+    install_requires=[  # Liệt kê các phụ thuộc cần thiết
         'colorama==0.4.6',
         'pyfiglet==1.0.2',
         'setuptools==75.4.0',
     ],
-    classifiers=[  # Các phân loại (classifiers) cho dự án
-        'Programming Language :: Python :: 3',  # Chỉ ra rằng dự án hỗ trợ Python 3
-        'License :: OSI Approved :: MIT License',  # Giấy phép của dự án (ở đây là MIT License)
-        'Operating System :: OS Independent',  # Dự án không phụ thuộc vào hệ điều hành cụ thể nào
+    classifiers=[  # Các phân loại dự án
+        'Programming Language :: Python :: 3',  # Dự án hỗ trợ Python 3
+        'License :: OSI Approved :: MIT License',  # Giấy phép dự án (MIT)
+        'Operating System :: OS Independent',  # Dự án không phụ thuộc hệ điều hành cụ thể
     ],
-    entry_points={  # Các điểm vào (entry points) cho giao diện dòng lệnh (CLI)
+    entry_points={  # Định nghĩa các điểm vào (entry points) cho CLI
         'console_scripts': [
-            'doc97-decrypt = cli:main',  # Liên kết lệnh 'doc97-decrypt' tới hàm 'main' trong file cli.py
+            'doc97-decrypt = cli:main',  # Liên kết lệnh 'doc97-decrypt' tới hàm 'main' trong src/cli.py
         ],
     },
     python_requires='>=3.6',  # Đảm bảo tương thích với Python 3.6 trở lên
-    include_package_data=True,  # Bao gồm các file không phải mã nguồn như README.md và các tài nguyên khác
-    package_data={  # Bao gồm các file không phải mã nguồn trong package
-        'password_cracker_word': [  # Tên gói (package) của bạn
-            'data/wordlists/*.txt',  # Bao gồm tất cả các file .txt trong thư mục wordlists
-            'data/encrypted_files/*.doc',  # Bao gồm tất cả các file .doc trong thư mục encrypted_files
-            'data/results/*.doc',  # Bao gồm tất cả các file .doc trong thư mục results
+    include_package_data=True,  # Bao gồm các file bổ sung như README.md
+    package_data={  # Bao gồm các file không phải mã nguồn (chẳng hạn như dữ liệu và tệp DOC)
+        'password_cracker_word': [
+            'data/wordlists/*.txt',  # Bao gồm các file *.txt trong thư mục 'data/wordlists'
+            'data/encrypted_files/*.doc',  # Bao gồm các file *.doc trong thư mục 'data/encrypted_files'
+            'data/results/*.doc',  # Bao gồm các file *.doc trong thư mục 'data/results'
         ],
     },
 )
