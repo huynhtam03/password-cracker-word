@@ -1,8 +1,0 @@
-README.md
-setup.py
-src/password_cracker_word.egg-info/PKG-INFO
-src/password_cracker_word.egg-info/SOURCES.txt
-src/password_cracker_word.egg-info/dependency_links.txt
-src/password_cracker_word.egg-info/entry_points.txt
-src/password_cracker_word.egg-info/requires.txt
-src/password_cracker_word.egg-info/top_level.txt
