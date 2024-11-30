@@ -4,7 +4,7 @@ setup(
     name='password-cracker-word',  # Project name
     version='1.0.0',
     author='Huynh Thanh Tam',  # Replace with your name
-    author_email='your.hthanhtam@hichaocau.online',  # Replace with your email
+    author_email='hthanhtam@hichaocau.online',  # Replace with your email
     description='A tool to decrypt MS DOC 97 files with various methods like XOR and password cracking.',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
