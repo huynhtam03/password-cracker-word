@@ -24,7 +24,6 @@ setup(
     ],
     classifiers=[  # Các phân loại dự án
         'Programming Language :: Python :: 3',  # Dự án hỗ trợ Python 3
-        'License :: OSI Approved :: MIT License',  # Giấy phép dự án (MIT)
         'Operating System :: OS Independent',  # Dự án không phụ thuộc hệ điều hành cụ thể
     ],
     entry_points={  # Định nghĩa các điểm vào (entry points) cho CLI
