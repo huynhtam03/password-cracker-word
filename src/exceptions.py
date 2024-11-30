@@ -1,25 +1,23 @@
-# exceptions.py
-
 class FileFormatError(Exception):
-    """Raised when the format of given file is unsupported or unrecognized."""
+    """Được ném ra khi định dạng tệp không được hỗ trợ hoặc không thể nhận dạng."""
     pass
 
 
 class ParseError(Exception):
-    """Raised when the file cannot be parsed correctly."""
+    """Được ném ra khi không thể phân tích tệp một cách chính xác."""
     pass
 
 
 class DecryptionError(Exception):
-    """Raised when the file cannot be decrypted."""
+    """Được ném ra khi không thể giải mã tệp."""
     pass
 
 
 class EncryptionError(Exception):
-    """Raised when the file cannot be encrypted."""
+    """Được ném ra khi không thể mã hóa tệp."""
     pass
 
 
 class InvalidKeyError(DecryptionError):
-    """Raised when the given password or key is incorrect or cannot be verified."""
+    """Được ném ra khi mật khẩu hoặc khóa được cung cấp không đúng hoặc không thể xác minh."""
     pass
