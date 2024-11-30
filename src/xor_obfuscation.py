@@ -9,7 +9,7 @@ logger.addHandler(logging.NullHandler())
 
 def _makekey(password, salt, block):
     r"""
-    Return a intermediate key.
+    Trả về một khóa trung gian.
 
         >>> password = 'password1'
         >>> salt = b'\xe8w,\x1d\x91\xc5j7\x96Ga\xb2\x80\x182\x17'
@@ -181,7 +181,7 @@ class DocumentXOR:
     @staticmethod
     def verifypw(password, verificationBytes):
         r"""
-        Return True if the given password is valid.
+        Trả về True nếu mật khẩu đã cho hợp lệ.
 
             >>> from struct import unpack
             >>> password = 'VelvetSweatshop'
@@ -204,7 +204,7 @@ class DocumentXOR:
             intermidiate_2 = verifier * 2
             intermidiate_2 = (
                 intermidiate_2 & 0x7FFF
-            )  # SET most significant bit of Intermediate2 TO 0
+            )  # ĐẶT bit quan trọng nhất của Intermediate2 về 0
 
             intermidiate_3 = intermidiate_1 ^ intermidiate_2
 
@@ -261,7 +261,7 @@ class DocumentXOR:
         if index % 2 == 1:
             temp = (
                 xor_key & 0xFF00
-            ) >> 8  # SET Temp TO most significant byte of XorKey
+            ) >> 8  # ĐẶT Temp bằng byte cao nhất của XorKey
             obfuscation_array[index] = DocumentXOR.xor_ror(
                 DocumentXOR.pad_array[0], temp
             )
@@ -313,7 +313,7 @@ class DocumentXOR:
     @staticmethod
     def decrypt(password, ibuf, plaintext, records, base):
         r"""
-        Return decrypted data (DecryptData_Method1)
+        Trả về dữ liệu đã giải mã (DecryptData_Method1)
         """
         obuf = io.BytesIO()
 

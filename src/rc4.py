@@ -1,18 +1,7 @@
-import functools
 import io
 import logging
 from hashlib import md5
 from struct import pack
-
-from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives.ciphers import Cipher
-
-try:
-    # NOTE: Avoid DeprecationWarning since cryptography>=43.0
-    # TODO: .algorithm differs from the official documentation
-    from cryptography.hazmat.decrepit.ciphers.algorithms import ARC4
-except ImportError:
-    from cryptography.hazmat.primitives.ciphers.algorithms import ARC4
 
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.NullHandler())
@@ -20,7 +9,7 @@ logger.addHandler(logging.NullHandler())
 
 def _makekey(password, salt, block):
     r"""
-    Return a intermediate key.
+    Trả về một khóa trung gian.
 
         >>> password = 'password1'
         >>> salt = b'\xe8w,\x1d\x91\xc5j7\x96Ga\xb2\x80\x182\x17'
@@ -42,6 +31,35 @@ def _makekey(password, salt, block):
     return key
 
 
+def rc4(key, data):
+    """
+    Thực hiện mã hóa/giải mã RC4.
+    """
+    # KSA: Khởi tạo bộ trạng thái S với khóa
+    key_length = len(key)
+    S = list(range(256))  # Mảng S chứa 256 giá trị
+    j = 0
+    for i in range(256):
+        j = (j + S[i] + key[i % key_length]) % 256
+        S[i], S[j] = S[j], S[i]
+
+    # PRGA: Tạo dòng khóa từ mảng S
+    i = 0
+    j = 0
+    output = bytearray()
+
+    # Tạo dòng khóa và XOR với dữ liệu
+    for byte in data:
+        i = (i + 1) % 256
+        j = (j + S[i]) % 256
+        S[i], S[j] = S[j], S[i]
+        K = S[(S[i] + S[j]) % 256]  # Tạo byte khóa
+        output.append(byte ^ K)  # XOR giữa byte dữ liệu và byte khóa
+
+    return bytes(output)
+
+
+
 class DocumentRC4:
     def __init__(self):
         pass
@@ -49,7 +67,7 @@ class DocumentRC4:
     @staticmethod
     def verifypw(password, salt, encryptedVerifier, encryptedVerifierHash):
         r"""
-        Return True if the given password is valid.
+        Trả về True nếu mật khẩu đã cho là hợp lệ.
 
             >>> password = 'password1'
             >>> salt = b'\xe8w,\x1d\x91\xc5j7\x96Ga\xb2\x80\x182\x17'
@@ -58,38 +76,40 @@ class DocumentRC4:
             >>> DocumentRC4.verifypw(password, salt, encryptedVerifier, encryptedVerifierHash)
             True
         """
-        # https://msdn.microsoft.com/en-us/library/dd952648(v=office.12).aspx
         block = 0
         key = _makekey(password, salt, block)
-        cipher = Cipher(ARC4(key), mode=None, backend=default_backend())
-        decryptor = cipher.decryptor()
-        verifier = decryptor.update(encryptedVerifier)
-        verfiferHash = decryptor.update(encryptedVerifierHash)
+
+        # Giải mã dữ liệu bằng RC4
+        verifier = rc4(key, encryptedVerifier)
+
+        # Tính toán hash MD5 của dữ liệu đã giải mã
         hash = md5(verifier).digest()
-        logging.debug([verfiferHash, hash])
-        return hash == verfiferHash
+
+        # So sánh hash đã giải mã với hash được cung cấp
+        return hash == encryptedVerifierHash
 
     @staticmethod
     def decrypt(password, salt, ibuf, blocksize=0x200):
         r"""
-        Return decrypted data.
+        Trả về dữ liệu đã giải mã.
         """
         obuf = io.BytesIO()
 
         block = 0
         key = _makekey(password, salt, block)
 
-        for c, buf in enumerate(iter(functools.partial(ibuf.read, blocksize), b"")):
-            cipher = Cipher(ARC4(key), mode=None, backend=default_backend())
-            decryptor = cipher.decryptor()
+        while True:
+            buf = ibuf.read(blocksize)
+            if not buf:
+                break
 
-            dec = decryptor.update(buf) + decryptor.finalize()
+            # Giải mã khối dữ liệu bằng RC4
+            dec = rc4(key, buf)
+
+            # Viết dữ liệu giải mã vào bộ đệm
             obuf.write(dec)
 
-            # From wvDecrypt:
-            # at this stage we need to rekey the rc4 algorithm
-            # Dieter Spaar <spaar@mirider.augusta.de> figured out
-            # this rekeying, big kudos to him
+            # Tăng block và tái tạo lại khóa
             block += 1
             key = _makekey(password, salt, block)
 

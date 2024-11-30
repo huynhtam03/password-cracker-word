@@ -4,7 +4,6 @@ import shutil
 import tempfile
 from collections import namedtuple
 from struct import pack, unpack, unpack_from
-
 import olefile
 import base
 import exceptions
@@ -55,7 +54,7 @@ FibBase = namedtuple(
 
 def _parseFibBase(blob):
     r"""
-    Pasrse FibBase binary blob.
+    Phân tích blob nhị phân FibBase.
 
         >>> blob = io.BytesIO(b'\xec\xa5\xc1\x00G\x00\t\x04\x00\x00\x00\x13\xbf\x004\x00\
         ... \x00\x00\x00\x10\x00\x00\x00\x00\x00\x04\x00\x00\x16\x04\x00\x00')
@@ -260,9 +259,9 @@ def _parse_header_RC4(encryptionHeader):
 
 
 class Doc97File(base.BaseOfficeFile):
-    """Return a MS-DOC file object.
+    """Trả về một đối tượng tệp MS-DOC.
 
-    Examples:
+    Ví dụ:
         >>> with open("tests/inputs/rc4cryptoapi_password.doc", "rb") as f:
         ...     officefile = Doc97File(f)
         ...     officefile.load_key(password="Password1234_")
@@ -277,7 +276,7 @@ class Doc97File(base.BaseOfficeFile):
 
     def __init__(self, file):
         self.file = file
-        ole = olefile.OleFileIO(file)  # do not close this, would close file
+        ole = olefile.OleFileIO(file)  # không đóng cái này, sẽ đóng file
         self.ole = ole
         self.format = "doc97"
         self.keyTypes = ["password"]
@@ -306,7 +305,7 @@ class Doc97File(base.BaseOfficeFile):
         )
 
         if fib.base.fEncrypted == 1:
-            if fib.base.fObfuscation == 1:  # Using XOR obfuscation
+            if fib.base.fObfuscation == 1:  # Sử dụng obfuscation XOR
                 xor_obf_password_verifier = fib.base.IKey
                 logger.debug(hex(xor_obf_password_verifier))
             else:  # elif fib.base.fObfuscation == 0:
@@ -316,7 +315,7 @@ class Doc97File(base.BaseOfficeFile):
                 )
                 with self.ole.openstream(self.info.tablename) as table:
                     encryptionHeader = (
-                        table  # TODO why create a 2nd reference to same stream?
+                        table  # TODO tại sao lại tạo thêm một tham chiếu thứ 2 đến cùng một stream?
                     )
                     encryptionVersionInfo = table.read(4)
                     vMajor, vMinor = unpack("<HH", encryptionVersionInfo)
@@ -334,7 +333,7 @@ class Doc97File(base.BaseOfficeFile):
                             self.salt = info["salt"]
                         else:
                             raise exceptions.InvalidKeyError(
-                                "Failed to verify password"
+                                "Không thể xác minh mật khẩu"
                             )
                     elif (
                         vMajor in [0x0002, 0x0003, 0x0004] and vMinor == 0x0002
@@ -353,14 +352,14 @@ class Doc97File(base.BaseOfficeFile):
                             self.keySize = info["keySize"]
                         else:
                             raise exceptions.InvalidKeyError(
-                                "Failed to verify password"
+                                "Không thể xác minh mật khẩu"
                             )
                     else:
                         raise exceptions.DecryptionError(
-                            "Unsupported encryption method"
+                            "Phương pháp mã hóa không được hỗ trợ"
                         )
         else:
-            raise exceptions.DecryptionError("File is not encrypted")
+            raise exceptions.DecryptionError("Tệp không được mã hóa")
 
     def decrypt(self, outfile):
         # fd, _outfile_path = tempfile.mkstemp()
@@ -424,14 +423,14 @@ class Doc97File(base.BaseOfficeFile):
                 )
             else:
                 raise exceptions.DecryptionError(
-                    "Unsupported encryption method: {}".format(self.type)
+                    "Phương pháp mã hóa không được hỗ trợ: {}".format(self.type)
                 )
 
             dec1.seek(FIB_LENGTH)
             obuf1.write(dec1.read())
             obuf1.seek(0)
 
-        # TODO: Preserve header
+        # TODO: Bảo lưu header
         obuf2 = io.BytesIO()
 
         if self.type == "rc4":
@@ -444,7 +443,7 @@ class Doc97File(base.BaseOfficeFile):
                 )
         else:
             raise exceptions.DecryptionError(
-                "Unsupported encryption method: {}".format(self.type)
+                "Phương pháp mã hóa không được hỗ trợ: {}".format(self.type)
             )
 
         obuf2.write(dec2.read())
@@ -463,7 +462,7 @@ class Doc97File(base.BaseOfficeFile):
                     )
             else:
                 raise exceptions.DecryptionError(
-                    "Unsupported encryption method: {}".format(self.type)
+                    "Phương pháp mã hóa không được hỗ trợ: {}".format(self.type)
                 )
             obuf3.write(dec3.read())
             obuf3.seek(0)
@@ -486,7 +485,7 @@ class Doc97File(base.BaseOfficeFile):
 
     def is_encrypted(self):
         r"""
-        Test if the file is encrypted.
+        Kiểm tra xem tệp có được mã hóa hay không.
 
             >>> f = open("tests/inputs/plain.doc", "rb")
             >>> file = Doc97File(f)

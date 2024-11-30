@@ -1,10 +1,10 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='password-cracker-word',  # Updated project name
+    name='password-cracker-word',  # Project name
     version='1.0.0',
-    author='Your Name',  # Replace with your name
-    author_email='your.email@example.com',  # Replace with your email
+    author='Huynh Thanh Tam',  # Replace with your name
+    author_email='your.hthanhtam@hichaocau.online',  # Replace with your email
     description='A tool to decrypt MS DOC 97 files with various methods like XOR and password cracking.',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
@@ -12,11 +12,20 @@ setup(
     packages=find_packages(where='src'),  # Ensure that packages are found in the 'src' directory
     package_dir={'': 'src'},  # Maps the package namespace to the 'src' directory
     install_requires=[  # List dependencies your project needs
-        'pyfiglet',
-        'tqdm',
-        'colorama',  # Assuming the 'xor_obfuscation' module is available for installation
+        'cffi==1.17.1',
+        'colorama==0.4.6',
+        'cryptography==43.0.3',
+        'cupy-cuda12x==13.3.0',
+        'fastrlock==0.8.2',
+        'numpy==2.1.3',
+        'olefile==0.47',
+        'password-cracker-word==1.0',  # Assuming you want to install your own package as a dependency (self-reference)
+        'pycparser==2.22',
+        'pyfiglet==1.0.2',
+        'setuptools==75.4.0',
+        'tqdm==4.67.0',
     ],
-    classifiers=[
+    classifiers=[  # Classifiers for your package
         'Programming Language :: Python :: 3',
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
@@ -27,11 +36,12 @@ setup(
         ],
     },
     python_requires='>=3.6',  # Ensure compatibility with Python 3.6 and later
-    test_suite='tests',  # Specify the location of your test suite
-    include_package_data=True,  # Includes non-Python files, like README.md or other assets
-    data_files=[  # Optionally, include data files such as the wordlist files
-        ('wordlists', ['data/wordlists/10MPASS.txt', 'data/wordlists/dictionary.txt']),
-        ('encrypted_files', ['data/encrypted_files/hay.doc', 'data/encrypted_files/hihi.doc']),
-        ('results', ['data/results/decrypted_file.doc', 'data/results/decrypted_hay.doc']),
-    ],
+    include_package_data=True,  # Includes non-Python files like README.md or other assets
+    package_data={  # Includes non-Python files inside the package
+        'password_cracker_word': [  # This should match the package name
+            'data/wordlists/*.txt',  # Include all .txt files from the wordlists directory
+            'data/encrypted_files/*.doc',  # Include all .doc files from the encrypted_files directory
+            'data/results/*.doc',  # Include all .doc files from the results directory
+        ],
+    },
 )
