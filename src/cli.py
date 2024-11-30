@@ -32,10 +32,9 @@ CYAN = Fore.CYAN
 WHITE = Fore.WHITE
 RESET = Style.RESET_ALL
 
-# Utility Functions
-
+# Các hàm tiện ích
 def init_worker_shared_memory(shm_name, size, current_password_dict):
-    """Initialize the worker with shared memory access."""
+    """Khởi tạo bộ nhớ chia sẻ cho worker."""
     global shm
     shm = shared_memory.SharedMemory(name=shm_name)
     global global_doc_data
@@ -44,7 +43,7 @@ def init_worker_shared_memory(shm_name, size, current_password_dict):
     current_password = current_password_dict
 
 def display_logo():
-    """Display logo and contributors."""
+    """Hiển thị logo và thông tin đóng góp."""
     logo = pyfiglet.figlet_format("HIHI")
     print(f"{MAGENTA}{logo}{RESET}", end="")
     contributors = [
@@ -56,7 +55,7 @@ def display_logo():
         print(f"{CYAN}{name:<25} - {student_id:<10} - {class_id}{RESET}")
 
 def display_help():
-    """Display help for the CLI."""
+    """Hiển thị hướng dẫn cho CLI."""
     help_text = f"""
     {CYAN}Hướng dẫn sử dụng:{RESET}
 
@@ -74,10 +73,9 @@ def display_help():
     """
     print(help_text)
 
-# Main Decryption Logic
-
+# Kiểm tra mã hóa
 def check_encryption(file_path):
-    """Check if the file is encrypted."""
+    """Kiểm tra xem tệp có mã hóa không."""
     try:
         with open(file_path, "rb") as f:
             doc = Doc97File(f)
@@ -85,15 +83,16 @@ def check_encryption(file_path):
     except Exception:
         return False
 
+# Giải mã với mật khẩu
 def decrypt_file(password, output_path, found, lock, current_password_dict):
-    """Attempt to decrypt the file with the provided password."""
+    """Cố gắng giải mã tệp với mật khẩu đã cung cấp."""
     if found.value:
-        return None  # Stop if the password has already been found
+        return None  # Dừng nếu mật khẩu đã được tìm thấy
     try:
         with lock:
             current_password_dict['password'] = password
 
-        # Use shared memory for file data
+        # Sử dụng bộ nhớ chia sẻ cho dữ liệu tệp
         data = global_doc_data
         with BytesIO(data) as f:
             doc = Doc97File(f)
@@ -118,10 +117,9 @@ def decrypt_file(password, output_path, found, lock, current_password_dict):
             print(f"{RED}\nLỗi không mong đợi: {e}{RESET}")
         return None
 
-# Password Generation and Handling
-
+# Sinh mật khẩu phức tạp và xử lý wordlist
 def generate_complex_passwords(max_length=None, wordlist=None):
-    """Generate complex passwords or use a wordlist."""
+    """Sinh mật khẩu phức tạp hoặc sử dụng wordlist."""
     if wordlist:
         try:
             with open(wordlist, 'r', encoding='utf-8') as f:
@@ -142,7 +140,7 @@ def generate_complex_passwords(max_length=None, wordlist=None):
         return
 
 def count_total_passwords(max_length=None, wordlist=None):
-    """Count the total number of passwords based on the wordlist or max_length."""
+    """Đếm tổng số mật khẩu từ wordlist hoặc max_length."""
     if wordlist:
         try:
             with open(wordlist, 'r', encoding='utf-8') as f:
@@ -155,14 +153,12 @@ def count_total_passwords(max_length=None, wordlist=None):
         return sum(len(chars) ** length for length in range(1, max_length + 1))
     return 0
 
-# Displaying Current Password
-
+# Hiển thị mật khẩu hiện tại
 def display_current_password(current_password_dict, lock, stop_event, start_time):
-    """Thread to display the current password and elapsed time."""
+    """Luồng hiển thị mật khẩu và thời gian đã trôi qua."""
     last_displayed = ""
     while not stop_event.is_set():
-        # Update CPU load every iteration (without interval=1, so it's non-blocking)
-        cpu_load = psutil.cpu_percent(interval=0.1)  # Quick sampling
+        cpu_load = psutil.cpu_percent(interval=0.1)  # Lấy tải CPU nhanh chóng
 
         with lock:
             current_password = current_password_dict.get('password', '')
@@ -175,10 +171,9 @@ def display_current_password(current_password_dict, lock, stop_event, start_time
 
         time.sleep(0.1)
 
-# Multiprocessing Decryption Logic
-
+# Đa xử lý giải mã
 def try_passwords_multiprocessing(password_generator, total_passwords, output_path, file_path, num_processes=None):
-    """Try passwords in parallel using multiprocessing."""
+    """Cố gắng giải mã mật khẩu song song sử dụng đa xử lý."""
     if num_processes is None:
         num_processes = cpu_count()
 
@@ -193,7 +188,7 @@ def try_passwords_multiprocessing(password_generator, total_passwords, output_pa
     shm = shared_memory.SharedMemory(create=True, size=len(file_data))
     shm.buf[:] = file_data
 
-    # Start the display thread
+    # Khởi động luồng hiển thị
     start_time = time.time()
     stop_event = threading.Event()
     display_thread = threading.Thread(target=display_current_password, args=(current_password_dict, lock, stop_event, start_time))
@@ -221,10 +216,9 @@ def try_passwords_multiprocessing(password_generator, total_passwords, output_pa
     if not found.value:
         print(f"\n{YELLOW}Không tìm thấy mật khẩu đúng trong danh sách.{RESET}")
 
-# Decryption Functions for CLI
-
+# Hàm giải mã cho CLI
 def decrypt_using_wordlist(file_path, wordlist_path, output_path):
-    """Decrypt the file using a wordlist of passwords."""
+    """Giải mã tệp sử dụng wordlist mật khẩu."""
     try:
         password_generator = generate_complex_passwords(wordlist=wordlist_path)
         total_passwords = count_total_passwords(wordlist=wordlist_path)
@@ -237,7 +231,7 @@ def decrypt_using_wordlist(file_path, wordlist_path, output_path):
         print(f"{RED}Lỗi khi đọc wordlist: {e}{RESET}")
 
 def decrypt_generate_full_complex_passwords(file_path, output_path, max_length):
-    """Generate full range of passwords and attempt decryption."""
+    """Sinh mật khẩu phức tạp và cố gắng giải mã."""
     password_generator = generate_complex_passwords(max_length=max_length)
     total_passwords = count_total_passwords(max_length=max_length)
     if total_passwords == 0:
@@ -245,17 +239,14 @@ def decrypt_generate_full_complex_passwords(file_path, output_path, max_length):
         return
     try_passwords_multiprocessing(password_generator, total_passwords, output_path, file_path)
 
-# Main Function
-
-
-
+# Hàm chính
 def main():
-    """Main entry point for the CLI."""
+    """Điểm vào chính cho CLI."""
     display_logo()
 
     display_cpu_and_gpu_info()
 
-    # CLI parser configuration
+    # Cấu hình parser CLI
     parser = argparse.ArgumentParser(description="Giải mã file MS DOC97.")
     parser.add_argument("file", help="Đường dẫn tới file .doc", nargs="?")
     parser.add_argument("--password", help="Mật khẩu để giải mã file")
