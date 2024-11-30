@@ -59,7 +59,6 @@ def rc4(key, data):
     return bytes(output)
 
 
-
 class DocumentRC4:
     def __init__(self):
         pass
